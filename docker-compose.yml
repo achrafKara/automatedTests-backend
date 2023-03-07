@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+
+  mongo:
+    image: mongo
+    container_name: mongo_selenium
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=automatedTestsDB
+      - MONGO_INITDB_ROOT_PASSWORD=QrTy76Gb90Fz
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-db:/data/db
+
+  selenium-hub:
+    image: selenium/hub:4.8.0
+    container_name: selenium-hub
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+
+  chrome:
+    image: selenium/node-chrome:4.8.0
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    ports:
+      - "7901:7900"
+
+  edge:
+    image: selenium/node-edge:4.8.0
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    ports:
+      - "7902:7900"
+
+  firefox:
+    image: selenium/node-firefox:4.8.0
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    ports:
+      - "7903:7900"
+
+volumes:
+  mongo-db:

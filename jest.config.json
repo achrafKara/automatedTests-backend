@@ -1,0 +1,14 @@
+{
+    "reporters": [ 
+        "default", 
+        [ 
+            "jest-junit", 
+            { 
+                "suiteName": "Automated tests",
+                "outputDirectory": "../",
+                "classNameTemplate": "{title}",
+                "titleTemplate": "{title}"
+            } 
+        ]
+    ]
+}
