@@ -11,7 +11,7 @@ describe.each([
     ['Chrome', capChrome],
     ['Edge', capEdge],
     ['FireFox', capFirefox],
-])(`Login page`, (browser, cap) => {
+])(`Sign in page`, (browser, cap) => {
     let driver;
 
     beforeAll(async () => {
@@ -26,7 +26,7 @@ describe.each([
         await driver.quit();
     }, 40000);
 
-    it(`On ${browser}: login page should render`, async () => {
+    it(`On ${browser}: Sign in page should render`, async () => {
         try {
             let link = await driver.findElement(By.className('menu-sign'));
             await link.click();

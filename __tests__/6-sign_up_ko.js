@@ -11,7 +11,7 @@ describe.each([
     ['Chrome', capChrome],
     ['Edge', capEdge],
     ['FireFox', capFirefox],
-])(`Inscription KO`, (browser, cap) => {
+])(`Sign up KO`, (browser, cap) => {
     let driver;
 
     beforeAll(async () => {
@@ -26,7 +26,7 @@ describe.each([
         await driver.quit();
     }, 40000);
 
-    it(`On ${browser}: when a required field is empty, an alert with an error message should pop up`, async () => {
+    it(`On ${browser}: When a required field is empty, an alert with an error message should pop up`, async () => {
         try {
             let submitButton = await driver.findElement(By.name('ezrepoforms_user_register[register]'));
 
@@ -43,7 +43,7 @@ describe.each([
         }
     }, 35000);
 
-    it(`On ${browser}: when a field is not valid, an alert with an error message should pop up`, async () => {
+    it(`On ${browser}: When a field is not valid, an alert with an error message should pop up`, async () => {
         try {
             let usernameInput = await driver.findElement(By.name('ezrepoforms_user_register[fieldsData][user_account][value][username]'));
             let emailInput = await driver.findElement(By.name('ezrepoforms_user_register[fieldsData][user_account][value][email]'));

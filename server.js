@@ -31,6 +31,8 @@ app.enable('trust proxy');
 app.use(cors({
   origin: ['http://localhost:3031', 'http://localhost:80', 'http://localhost'],
 }));
+// allow all CORS
+// app.use(cors());
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 // parse application/json
@@ -43,6 +45,7 @@ app.get('/', (req, res) => {
 });
 
 app.use(require('./controllers/exec'));
+app.use(require('./controllers/user'));
 
 // Static files
 // app.use(express.static('./images'));

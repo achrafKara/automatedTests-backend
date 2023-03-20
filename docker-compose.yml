@@ -5,7 +5,6 @@ services:
   mongo:
     image: mongo
     container_name: mongo_selenium
-    restart: always
     environment:
       - MONGO_INITDB_ROOT_USERNAME=automatedTestsDB
       - MONGO_INITDB_ROOT_PASSWORD=QrTy76Gb90Fz
@@ -23,7 +22,7 @@ services:
       - "4444:4444"
 
   chrome:
-    image: selenium/node-chrome:4.8.0
+    image: selenium/node-chrome:110.0
     shm_size: 2gb
     depends_on:
       - selenium-hub
@@ -35,7 +34,7 @@ services:
       - "7901:7900"
 
   edge:
-    image: selenium/node-edge:4.8.0
+    image: selenium/node-edge:110.0
     shm_size: 2gb
     depends_on:
       - selenium-hub
@@ -47,7 +46,7 @@ services:
       - "7902:7900"
 
   firefox:
-    image: selenium/node-firefox:4.8.0
+    image: selenium/node-firefox:110.0
     shm_size: 2gb
     depends_on:
       - selenium-hub

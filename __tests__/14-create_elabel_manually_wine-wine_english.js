@@ -12,9 +12,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 describe.each([
     ['Chrome', capChrome],
-    ['Edge', capEdge],
-    ['FireFox', capFirefox],
-])(`Création manuelle d\'Elabel pour un Vin:vin et langue:English`, (browser, cap) => {
+    // ['Edge', capEdge],
+    // ['FireFox', capFirefox],
+])(`Create an e-label manually: type "Wine" category "Wine" and langue "English"`, (browser, cap) => {
     let driver;
 
     beforeAll(async () => {
@@ -29,7 +29,7 @@ describe.each([
         await driver.quit();
     }, 130000);
 
-    it(`On ${browser}: login`, async () => {
+    it(`On ${browser}: Login`, async () => {
         try {
             const usernameInput = await driver.findElement(By.name('_username'));
             const passwordInput = await driver.findElement(By.name('_password'));
@@ -47,7 +47,7 @@ describe.each([
         }
     }, 35000);
 
-    it(`On ${browser}: product information and create in all languages`, async () => {
+    it(`On ${browser}: Create in all languages`, async () => {
         try {
             await driver.setFileDetector(new remote.FileDetector); 
 
@@ -172,12 +172,44 @@ describe.each([
              * 
              */
 
-            const nutritionDeclaration = await driver.findElement(By.xpath('//*[@id="wizard-h-3"]/div[2]/label'));
-            await driver.wait(until.elementIsVisible(nutritionDeclaration), 10000, 'Timed out after 10 seconds', 2500);
-            const wineEnergy = await driver.findElement(By.id('wine_energy'));
+            const energy100 = await driver.findElement(By.xpath('//*[@id="wizard-h-3"]/div[2]/label'));
+            await energy100.click();
 
-            await nutritionDeclaration.click();
-            await wineEnergy.sendKeys('78');
+            const energy100Cont = await driver.findElement(By.id('energy-100'));
+            await driver.wait(until.elementIsVisible(energy100Cont), 10000, 'Timed out after 10 seconds', 2500);
+
+            const energyValueManual = await driver.findElement(By.xpath('//*[@id="energy-100"]/div[1]/div[2]/label'));
+            await energyValueManual.click();
+
+            const wineEnergy = await driver.findElement(By.id('wine_energy'));
+            await wineEnergy.sendKeys('100');
+
+            const energyPerPortion = await driver.findElement(By.xpath('//*[@id="wizard-h-3"]/div[4]/div/label'));
+            await energyPerPortion.click();
+
+            const winePortion = await driver.findElement(By.id('wine_portion'));
+            const winePortionNbr = await driver.findElement(By.id('wine_nbportion'));
+
+            await winePortion.sendKeys('50');
+            await winePortionNbr.sendKeys('5');
+
+            const fullNutritionDeclaration = await driver.findElement(By.xpath('//*[@id="wizard-h-3"]/div[6]/label'));
+            await fullNutritionDeclaration.click();
+
+            const fat = await driver.findElement(By.id('wine_fat'));
+            const fatSaturates = await driver.findElement(By.id('wine_fat_saturates'));
+            const carbo = await driver.findElement(By.id('wine_carbo'));
+            const carboSugar = await driver.findElement(By.id('wine_carbo_sugar'));
+            const protein = await driver.findElement(By.id('wine_protein'));
+            const salt = await driver.findElement(By.id('wine_salt'));
+
+            await fat.sendKeys('10');
+            await fatSaturates.sendKeys('5');
+            await carbo.sendKeys('5');
+            await carboSugar.sendKeys('5');
+            await protein.sendKeys('5');
+            await salt.sendKeys('5');
+
 
             /**
              * 
@@ -244,7 +276,7 @@ describe.each([
         }
     }, 45000);
 
-    it(`On ${browser}: QR code generated`, async () => {
+    it(`On ${browser}: Validate information`, async () => {
         try {
             await driver.setFileDetector(new remote.FileDetector);
 
@@ -262,7 +294,7 @@ describe.each([
             await driver.wait(until.elementIsVisible(qrImage), 10000, 'Timed out after 10 seconds', 2500);
             const encodedString = await qrImage.takeScreenshot(true);
 
-            fs.writeFileSync(`${process.env.JEST_JUNIT_OUTPUT_DIR}/qr-${browser}.png`, encodedString, 'base64');
+            fs.writeFileSync(`${process.cwd()}/temp/qr-${browser}-${process.env.USER_NAME}.png`, encodedString, 'base64');
 
             const button = await driver.wait(until.elementLocated(By.name('view')), 10000, 'Timed out after 20 seconds', 2500);
             await button.click();

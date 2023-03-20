@@ -11,7 +11,7 @@ describe.each([
     ['Chrome', capChrome],
     ['Edge', capEdge],
     ['FireFox', capFirefox],
-])(`Sélection du produit en création manuelle de Elabel`, (browser, cap) => {
+])(`Sign in OK`, (browser, cap) => {
     let driver;
 
     beforeAll(async () => {
@@ -26,7 +26,7 @@ describe.each([
         await driver.quit();
     }, 40000);
 
-    it(`On ${browser}: company profile page should render`, async () => {
+    it(`On ${browser}: Sign in with a valid profile, company page should render`, async () => {
         try {
             let usernameInput = await driver.findElement(By.name('_username'));
             let passwordInput = await driver.findElement(By.name('_password'));
@@ -40,24 +40,6 @@ describe.each([
             let text = await title.getText();
 
             expect(text).toEqual("Company Profile");
-        } catch (err) {
-            throw err;
-        }
-    }, 35000);
-    
-    it(`On ${browser}: Product page should render containing choices for product types`, async () => {
-        try {
-            let loader = await driver.findElement(By.id('ftco-loader'));
-            await driver.wait(until.elementIsNotVisible(loader), 30000, 'Timed out after 30 seconds', 3000);
-
-            let dropDown = await driver.findElement(By.id('dropdownMenu1'));
-            await dropDown.click();
-            let newElabelLink = await driver.findElement(By.css('a[href="/company-account/create-elabel"]'));
-            await newElabelLink.click();
-
-            let form = await driver.wait(until.elementLocated(By.name('product')), 9000, 'Timed out after 30 seconds', 3000);
-
-            expect(form).toBeTruthy();
         } catch (err) {
             throw err;
         }

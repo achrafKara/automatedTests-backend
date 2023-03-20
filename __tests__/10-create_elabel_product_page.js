@@ -11,7 +11,7 @@ describe.each([
     ['Chrome', capChrome],
     ['Edge', capEdge],
     ['FireFox', capFirefox],
-])(`Deconnexion`, (browser, cap) => {
+])(`Create e-label step 1 (product): page`, (browser, cap) => {
     let driver;
 
     beforeAll(async () => {
@@ -26,7 +26,7 @@ describe.each([
         await driver.quit();
     }, 40000);
 
-    it(`On ${browser}: login`, async () => {
+    it(`On ${browser}: Sign in`, async () => {
         try {
             let usernameInput = await driver.findElement(By.name('_username'));
             let passwordInput = await driver.findElement(By.name('_password'));
@@ -45,18 +45,19 @@ describe.each([
         }
     }, 35000);
     
-    it(`On ${browser}: clicking on logout tab, home page should render`, async () => {
+    it(`On ${browser}: Product page (Step 1) should render`, async () => {
         try {
-            let loader = await driver.findElement(By.css('#ftco-loader'));
+            let loader = await driver.findElement(By.id('ftco-loader'));
             await driver.wait(until.elementIsNotVisible(loader), 30000, 'Timed out after 30 seconds', 3000);
 
-            let logoutLink = await driver.findElement(By.xpath('/html/body/header/div[1]/div[2]/div[1]/ul/li[4]/a'));
-            await logoutLink.click();
+            let dropDown = await driver.findElement(By.id('dropdownMenu1'));
+            await dropDown.click();
+            let newElabelLink = await driver.findElement(By.xpath('/html/body/header/div[1]/div[2]/div[1]/ul/li[1]/div/ul/li[1]/a'));
+            await newElabelLink.click();
 
-            let title = await driver.wait(until.elementLocated(By.xpath('/html/body/main/div/section/div/h1/span')), 30000, 'Timed out after 30 seconds', 3000);
-            let text = await title.getText();
+            let form = await driver.wait(until.elementLocated(By.name('product')), 9000, 'Timed out after 30 seconds', 3000);
 
-            expect(text).toEqual("Digital consumer information starts here");
+            expect(form).toBeTruthy();
         } catch (err) {
             throw err;
         }

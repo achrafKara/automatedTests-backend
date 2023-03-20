@@ -11,7 +11,7 @@ describe.each([
     ['Chrome', capChrome],
     ['Edge', capEdge],
     ['FireFox', capFirefox],
-])(`Connexion OK`, (browser, cap) => {
+])(`Sign out`, (browser, cap) => {
     let driver;
 
     beforeAll(async () => {
@@ -26,7 +26,7 @@ describe.each([
         await driver.quit();
     }, 40000);
 
-    it(`On ${browser}: login with a valid profile, company page should render`, async () => {
+    it(`On ${browser}: login`, async () => {
         try {
             let usernameInput = await driver.findElement(By.name('_username'));
             let passwordInput = await driver.findElement(By.name('_password'));
@@ -40,6 +40,23 @@ describe.each([
             let text = await title.getText();
 
             expect(text).toEqual("Company Profile");
+        } catch (err) {
+            throw err;
+        }
+    }, 35000);
+    
+    it(`On ${browser}: clicking on logout tab, home page should render`, async () => {
+        try {
+            let loader = await driver.findElement(By.css('#ftco-loader'));
+            await driver.wait(until.elementIsNotVisible(loader), 30000, 'Timed out after 30 seconds', 3000);
+
+            let logoutLink = await driver.findElement(By.xpath('/html/body/header/div[1]/div[2]/div[1]/ul/li[4]/a'));
+            await logoutLink.click();
+
+            let title = await driver.wait(until.elementLocated(By.xpath('/html/body/main/div/section/div/h1/span')), 30000, 'Timed out after 30 seconds', 3000);
+            let text = await title.getText();
+
+            expect(text).toEqual("Digital consumer information starts here");
         } catch (err) {
             throw err;
         }

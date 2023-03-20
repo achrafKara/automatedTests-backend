@@ -11,7 +11,7 @@ describe.each([
     ['Chrome', capChrome],
     ['Edge', capEdge],
     ['FireFox', capFirefox],
-])(`Pas de souscription`, (browser, cap) => {
+])(`Create e-label step 1 (product): send form with empty data`, (browser, cap) => {
     let driver;
 
     beforeAll(async () => {
@@ -19,46 +19,43 @@ describe.each([
             .usingServer('http://localhost:4444')
             .withCapabilities(cap)
             .build();
-        await driver.get("https://uat.u-label.com/login");
+        await driver.get("https://uat.u-label.com/company-account/create-elabel");
     }, 30000);
 
     afterAll(async () => {
         await driver.quit();
     }, 40000);
 
-    it(`On ${browser}: login`, async () => {
+    it(`On ${browser}: Sign in`, async () => {
         try {
             let usernameInput = await driver.findElement(By.name('_username'));
             let passwordInput = await driver.findElement(By.name('_password'));
             let submitButton = await driver.findElement(By.className('btn-primary'));
 
-            await usernameInput.sendKeys('Ash NoSubscription');
+            await usernameInput.sendKeys('Ash Raf');
             await passwordInput.sendKeys('PASSword$123');
             await submitButton.click();
 
             let title = await driver.wait(until.elementLocated(By.className('main-title')), 30000, 'Timed out after 30 seconds', 5000);
             let text = await title.getText();
 
-            expect(text).toEqual("Company Identification");
+            expect(text).toEqual("Company Profile");
         } catch (err) {
             throw err;
         }
     }, 35000);
     
-    it(`On ${browser}: change subscription page should render with an error`, async () => {
+    it(`On ${browser}: Clicking on next without choosing a field, an error occur`, async () => {
         try {
-            let loader = await driver.findElement(By.id('ftco-loader'));
-            await driver.wait(until.elementIsNotVisible(loader), 30000, 'Timed out after 30 seconds', 3000);
+            let button = await driver.wait(until.elementLocated(By.id('product_create')), 9000, 'Timed out after 30 seconds', 3000);
+            await button.click();
 
-            let dropDown = await driver.findElement(By.id('dropdownMenu1'));
-            await dropDown.click();
-            let newElabelLink = await driver.findElement(By.css('a[href="/company-account/create-elabel"]'));
-            await newElabelLink.click();
+            await driver.wait(until.alertIsPresent());
+            let alert = await driver.switchTo().alert();
+            let alertText = await alert.getText();
+            await alert.accept();
 
-            let title = await driver.wait(until.elementLocated(By.css('.alert-danger')), 30000, 'Timed out after 30 seconds', 3000);
-            let text = await title.getText();
-
-            expect(text).toEqual("You can't create elabel, You should have a valid subscription");
+            expect(alertText).toEqual("Please verfie required fields");
         } catch (err) {
             throw err;
         }

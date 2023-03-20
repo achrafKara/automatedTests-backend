@@ -13,7 +13,7 @@ describe.each([
     ['Chrome', capChrome],
     ['Edge', capEdge],
     ['FireFox', capFirefox],
-])(`Inscription OK`, (browser, cap) => {
+])(`Sign up OK`, (browser, cap) => {
     let driver;
 
     beforeAll(async () => {
@@ -28,7 +28,7 @@ describe.each([
         await driver.quit();
     }, 40000);
 
-    it(`On ${browser}: registration completed page should render`, async () => {
+    it(`On ${browser}: Sign up with valid values, registration completed page should render`, async () => {
         try {
             let usernameInput = await driver.findElement(By.name('ezrepoforms_user_register[fieldsData][user_account][value][username]'));
             let emailInput = await driver.findElement(By.name('ezrepoforms_user_register[fieldsData][user_account][value][email]'));

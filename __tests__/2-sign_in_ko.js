@@ -11,7 +11,7 @@ describe.each([
     ['Chrome', capChrome],
     ['Edge', capEdge],
     ['FireFox', capFirefox],
-])(`Connexion KO`, (browser, cap) => {
+])(`Sign in KO`, (browser, cap) => {
     let driver;
 
     beforeAll(async () => {
@@ -26,7 +26,7 @@ describe.each([
         await driver.quit();
     }, 40000);
 
-    it(`On ${browser}: clicking on login without filling the form, an alert should pop up with an error message`, async () => {
+    it(`On ${browser}: Clicking on "Sign in" without filling the form, an alert should pop up with an error message`, async () => {
         try {
             let usernameInput = await driver.findElement(By.name('_username'));
             let passwordInput = await driver.findElement(By.name('_password'));
@@ -47,7 +47,7 @@ describe.each([
         }
     }, 35000);
     
-    it(`On ${browser}: entring bad credentials, an error message should render on the page`, async () => {
+    it(`On ${browser}: Entring bad credentials, an error message should render on the page`, async () => {
         try {
             let usernameInput = await driver.findElement(By.name('_username'));
             let passwordInput = await driver.findElement(By.name('_password'));

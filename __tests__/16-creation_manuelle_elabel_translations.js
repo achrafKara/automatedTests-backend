@@ -11,8 +11,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 describe.each([
     ['Chrome', capChrome],
-    // ['Edge', capEdge],
-    // ['FireFox', capFirefox],
+    ['Edge', capEdge],
+    ['FireFox', capFirefox],
 ])(`Création manuelle d\'Elabel pour un Vin:vin et langue:English et gérer les traductions`, (browser, cap) => {
     let driver;
 

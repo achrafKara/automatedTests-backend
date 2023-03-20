@@ -6,53 +6,61 @@ const convert = require('xml-js');
 
 // Test suits
 const suits = {
-  s1: '1-login_page.js',
-  s2: '2-connexion_ko.js',
-  s3: '3-connexion_ok.js',
-  s4: '4-deconnexion.js',
-  s6: '6-inscription_ko.js',
-  s7: '7-inscription_ok.js',
-  s8: '8-pas_de_souscription.js',
-  s10: '10-selection_produit_en_creation_manuelle_elabel.js',
-  s11: '11-selection_produit_en_creation_manuelle_elabel_err.js',
-  s12: '12-selection_type_source_produit.js',
-  s13: '13-identification_produit_validation_champs.js',
-  s14: '14-creation_manuelle_elabel.js',
-  s15: '15-creation_manuelle_elabel_translations.js'
+  1: '1-sign_in_page.js',
+  2: '2-sign_in_ko.js',
+  3: '3-sign_in_ok.js',
+  4: '4-sign_out.js',
+  6: '6-sign_up_ko.js',
+  7: '7-sign_up_ok.js',
+  8: '8-create_elabel_without_having_package.js',
+  10: '10-create_elabel_product_page.js',
+  11: '11-create_elabel_product_empty_form.js',
+  12: '12-create_elabel_product_wine-manually.js',
+  13: '13-information_product_validations.js',
+  14: '14-create_elabel_manually_wine-wine_english.js',
+  15: '15-create_elabel_manually_spirit-vodka_english.js',
+  16: '16-creation_manuelle_elabel_translations.js'
 };
 
 const users = [
   'isabel', 'kim', 'loan', 'mohamed', 'achraf'
 ];
 
-
 router.post('/exec', (req, res) => {
 
   let {suit, user} = req.body;
   let file= suit ? `-- ${suits[suit]}` : '';
+  const dir= `${__dirname}/../temp/`;
+  const outputName = `${user}.xml`;
 
-  if( !user || !users.includes(user)) return res.sendStatus(500);
+  if( !user || !suit) return res.sendStatus(500);
 
-  shell.exec(`JEST_JUNIT_OUTPUT_DIR="${process.cwd()}/users/${user}" npm run test ${file}`, 
+  shell.exec(`JEST_JUNIT_OUTPUT_DIR="${dir}" JEST_JUNIT_OUTPUT_NAME="${outputName}" USER_NAME="${user}" npm run test ${file}`, 
     function(code, stdout, stderr) {
-      const dir = `${process.cwd()}/users/${user}/`;
 
-      const jestReport = fs.readFileSync(`${dir}junit.xml`, { encoding: 'utf8' });
+      let QRs = null;
 
-      const QRs = ['Chrome', 'Edge', 'FireFox'].map((browser) => {
+      const jestReport = fs.readFileSync(`${dir}${outputName}`, { encoding: 'utf8' });
 
-        if (!fs.existsSync(`${dir}qr-${browser}.png`)) return null;
+      if (suit === '14' || suit === '15') {
 
-        const img = fs.readFileSync(`${dir}qr-${browser}.png`, { encoding: 'base64' });
-        
-        fs.unlinkSync(`${dir}qr-${browser}.png`);
-        return { browser, img }
-      })
+        QRs = ['Chrome', 'Edge', 'FireFox'].map((browser) => {
 
+          const path = `${dir}qr-${browser}-${user}.png`;
+
+          if (!fs.existsSync(path)) return null;
+
+          const img = fs.readFileSync(path, { encoding: 'base64' });
+          
+          fs.unlinkSync(path);
+          return { browser, img }
+        })
+      };
+      
       const result = convert.xml2json(jestReport, {compact: true, ignoreDeclaration: true});
       const parsedResult = JSON.parse(result)
 
-      fs.unlinkSync(`${dir}junit.xml`);
+      fs.unlinkSync(`${dir}${outputName}`);
 
       res.json({result: parsedResult.testsuites, QRs});
   });
